@@ -10,7 +10,7 @@ import (
 	"abc/internal/satellite/api/presenter"
 	"abc/internal/satellite/tiles/generator"
 	"abc/internal/satellite/usecase"
-	"abc/internal/satellite/tiles/generator/mocks"
+	"abc/internal/satellite/usecase/mocks"
 )
 
 type Interface_mock struct {
