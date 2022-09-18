@@ -29,7 +29,7 @@ func NewFeaturesProcessor(url string, bc usecase.BlobStorage, si usecase.Downloa
 }
 
 // CreateMapFeatureResponse f
-func (fp *FeaturesProcessor) CreateMapFeatureResponse(ctx context.Context, foundTiles []*presenter.MfsTiles, compressionType string, logMsg mfsvc.LogMessage) (*presenter.MapfeatureResponse, error) {
+func (fp *FeaturesProcessor) CreateMapFeatureResponse(ctx context.Context, foundTiles []presenter.MfsTiles, compressionType string, logMsg mfsvc.LogMessage) (*presenter.MapfeatureResponse, error) {
 
 	//.................
 	// mapFeatures := make([]*presenter.MapFeatures, 0)

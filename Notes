@@ -1,0 +1,19 @@
+The provided code snippet and details aren't enough for correcting. But I'll give you the list of points where I see the practices are missing, or if extra code has been added.
+
+Points to be noted:
+1. We generally keep all the mocks in same directory flat. i.e., full path inside mocks directory. Having multiple levels in mocks will only create a mess in importing. Configure mockery to not preserve the path of packages.
+2. Interface_mock is too much of data which probably might not be usable by all tests. The idea of writing a test is to give the minimal requirements to test the unit of the feature. Also, I believe you are using the struct composition thinking of inheritance in Java. It is not so extensively used in Go as it gives the implement type too much access.
+3. TestNewFeaturesProcessor (case-1 in your list) can be had, but not required as this is covered in other tests. You should call NewFeaturesProcessor() in all tests instead of FeaturesProcessor since fields are unexported.
+4. Unless there is an issue of testing a functionality, we should keep the tests in separate tests package. As in, generator_test for generator package. This means that this will be externally tested and we should write the package code that way that every line of the code is reachable thru external tests.
+You might have the doubt on how we'll test the internal functions or methods. The internal functions in the package are supposed to be called by one or mode exported function/method. We'll test the exported ones such a way that all internal code is covered too.
+5. TestCreateMapFeatureResponse -> TestFeaturesProcessor_CreateMapFeatureResponse. Just a convention that we are testing the method CreateMapFeatureResponse of receiver FeaturesProcessor.
+6. DownloadImage for interface is incorrect. It should be named as ImageDownloader, ImageOperator, ImageFetcher, etc.
+7. []*presenter.MfsTiles{} should be []presenter.MfsTiles{} as slice itself is an address.
+8. If it is an error you should check, don't use NotNil(). Rather, try Error, NoError, ErrorIs, etc. This is how the assert package is built. Also, the message field in assert functions (3rd or 4th argument) stands for failure case. As in, your message should say about the expectation like "expected an error from ..." and not success or failure.
+9. For DownloadBlob, returning BlobDetails isn't good practice, You should return *BlobDetails, so in absense, you can pass nil.
+10. Don't use mock.Anything or mock.AnythingOfType unless you are failing to recreate the object. And also, anything doesn't mean any number of arguments. Go is statically typed. GetLastModifiedFromBlob takes 3 arguments and you or your team has passed only 1 mock.Anything as mock argument.
+11. I believe you are assuming the return type of mock to be true or false whether mocked. It is incorrect. Mocking in any language means to mock the actual behaviour and return a dummy object so the remaining code can be tested as if we are running the actual application. Number of return values of mocks should be equal to number of returns values in actual method that we're mocking on.
+12. I only see UploadBlob in mocks, but the actual method and method signature in interface should at least return an error type.
+13. NewFeaturesProcessor is a function. Mocking on it is both invalid and not possible. We can only mock on methods.
+
+I could only reach your case-2 and it is getting harder and harder for me to assume the existing of some code bit and write. So, I'm stopping here. Try to understand the above mentioned points, and try implementing. Ask me in Telegram in case of doubts related to the pointers. It is not about success or failure, but is about how well you test the module so that it wouldn't cause an issue in prod.
